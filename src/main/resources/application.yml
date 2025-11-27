@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: Smart-Task-Manager
+  datasource:
+    url: jdbc:mysql://localhost:3306/STM
+    username: root
+    password: Rashu@2559
+  jpa:
+    hibernate:
+      ddl-auto: update
+      show-sql: true
+    properties:
+      hibernate:
+      format_sql: true
+server:
+    port: 8080
+jwt:
+  secret: w9f+gzo4O2bAdf2KTqijfGp2SO0fBPJN/MjUqgYFZlA=
+  expiration-ms: 3600000
