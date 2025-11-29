@@ -1,0 +1,49 @@
+name: Build Full Stack (Backend + Frontend)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout backend repo
+        uses: actions/checkout@v3
+
+      - name: Download frontend artifact from frontend repo
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          repo: Amansingh1811/SmartTaskManagerApp
+          workflow: build-frontend.yml
+          name: frontend-build
+          path: frontend-dist
+
+      - name: Copy frontend dist into backend static folder
+        run: |
+          rm -rf src/main/resources/static/*
+          cp -r frontend-dist/* src/main/resources/static/
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Build Spring Boot JAR
+        run: mvn -B clean package -DskipTests
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/stm-fullstack:latest .
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/stm-fullstack:latest
