@@ -19,8 +19,8 @@ jobs:
         with:
           repo: Amansingh1811/SmartTaskManagerApp
           workflow: frontend.yml
-          name: Build Frontend
-          path: Build Frontend
+          name: frontend-dist
+          path: frontend-dist
 
       - name: Copy frontend dist into backend static folder
         run: |
